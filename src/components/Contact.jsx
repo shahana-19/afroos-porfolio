@@ -6,21 +6,34 @@ const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate API call for form submission
-    setTimeout(() => {
+    const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSdYgs_QuFfXMEy4vpyiSCQfx3kIG0Fa0yFhxeuaUqE3bgHqUg/formResponse";
+    
+    const formData = new FormData(e.target);
+    
+    try {
+      await fetch(GOOGLE_FORM_ACTION_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: formData
+      });
+      
       setIsSubmitting(false);
       setIsSubmitted(true);
+      e.target.reset();
       
       // Reset success message after 5 seconds
       setTimeout(() => {
         setIsSubmitted(false);
-        e.target.reset();
       }, 5000);
-    }, 1500);
+    } catch (error) {
+      console.error("Form submission error:", error);
+      setIsSubmitting(false);
+      alert("Failed to send message. Please try again.");
+    }
   };
   return (
     <section id="contact" className="contact-section">
@@ -73,17 +86,35 @@ const Contact = () => {
               <form className="contact-form" onSubmit={handleSubmit}>
                 <div className="form-group">
                   <label htmlFor="name">Name</label>
-                  <input type="text" id="name" placeholder="Enter your name" required />
+                  <input 
+                    type="text" 
+                    id="name" 
+                    name="entry.1208347706" 
+                    placeholder="Enter your name" 
+                    required 
+                  />
                 </div>
                 
                 <div className="form-group">
                   <label htmlFor="email">Email</label>
-                  <input type="email" id="email" placeholder="Enter your email" required />
+                  <input 
+                    type="email" 
+                    id="email" 
+                    name="entry.1485694698" 
+                    placeholder="Enter your email" 
+                    required 
+                  />
                 </div>
                 
                 <div className="form-group">
                   <label htmlFor="message">Message</label>
-                  <textarea id="message" rows="5" placeholder="Your message here..." required></textarea>
+                  <textarea 
+                    id="message" 
+                    name="entry.747879120" 
+                    rows="5" 
+                    placeholder="Your message here..." 
+                    required
+                  ></textarea>
                 </div>
                 
                 <button type="submit" className="btn-primary form-submit" disabled={isSubmitting}>
